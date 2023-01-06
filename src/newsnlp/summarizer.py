@@ -7,7 +7,7 @@ from transformers import AutoModelForSeq2SeqLM
 # truncate text to 1024 words, ie, barthez's max input seq len
 # keep 70% by rule of thumbs, ie truncate abt 300/1024 words of
 # 1024 long text to actually get to near the 1024 words limit
-from newsnlp.base import ConfigLoader
+from newsnlp.base import ModelLoader
 
 MAX_INPUT_LEN = 1024
 MAX_INPUT_LEN_RATIO = .72
@@ -18,7 +18,7 @@ SUM_TEXT_MAX_LEN = 1024
 SUM_TITLE_MAX_LEN = 240
 
 
-class TextSummarizer(ConfigLoader):
+class TextSummarizer(ModelLoader):
     """
     Pretrained [BARThez](https://github.com/moussaKam/BARThez)
     used on a summarization task (French text only, up to 1024 words)
@@ -27,21 +27,24 @@ class TextSummarizer(ConfigLoader):
     config = {
         "fr": {
             "model": "moussaKam/barthez",
-            "tokenizer": "moussaKam/barthez-tokenizer"
+            "tokenizer": "moussaKam/barthez"
         }
     }
 
-    def __init__(self, lang, max_length=None):
+    def __init__(self, lang, max_length=None, **kwargs):
         """
-            Initialize the summarizer.
-            max_length (`int`, *optional*, defaults to 20):
-                The maximum length of the sequence to be generated.
+        Initialize the summarizer.
+        :param str lang: language code, eg. `fr`, `en` to pick from `.config`.
+            Must exist as a key in this `.config` class attribute!
+        :param int max_length:  *optional*, defaults to 20
+            The maximum length of the sequence to be generated.
+        TODO: build support for more languages
         """
         self.max_length = max_length or self.max_length
         assert lang == "fr", "French only supported as of now"
 
         self.model, self.tokenizer = \
-            self.load_from_config(lang, AutoModelForSeq2SeqLM)
+            self.load(lang, AutoModelForSeq2SeqLM, **kwargs)
 
     def __call__(self, text):
         return self.summarize(text)

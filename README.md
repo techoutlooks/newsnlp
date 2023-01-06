@@ -20,6 +20,8 @@ python -m spacy download en_core_web_sm
 
 - Download locally pretrained Barthez model, suitable for the summarisation task
 ```shell
+from transformers import AutoTokenizer
+
 # load pretrained models from checkpoints
 tokenizer = AutoTokenizer.from_pretrained("moussaKam/barthez")
 model = AutoModelForSeq2SeqLM.from_pretrained("moussaKam/barthez-orangesum-abstract")
