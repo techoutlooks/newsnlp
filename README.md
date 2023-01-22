@@ -2,6 +2,7 @@
 
 ## Dev
 
+###
 - Summariser's dependencies: `sentencepiece`
 ```shell
 
@@ -18,7 +19,9 @@ python -m spacy download en_core_web_sm
 
 ```
 
-- Download locally pretrained Barthez model, suitable for the summarisation task
+### Trying pretrained models from Huggingface 
+
+- Download once pretrained models locally, suitable for the summarisation task
 ```shell
 from transformers import AutoTokenizer
 
@@ -32,9 +35,18 @@ model.save_pretrained('data/barthez')
 
 ```
 
+### Using this library
 
+- Env setup
 ```shell
 pip-sync
+```
+
+- Usage
+```shell
+# set the downloads folder for pretrained models (optional). 
+# defaults to `newsnlp/data` in the source tree.
+#DATA_DIR=/mnt/gcs
 ```
 
 ## TODO

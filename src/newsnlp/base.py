@@ -1,6 +1,10 @@
 from os.path import dirname, realpath
 
 from transformers import AutoTokenizer
+from .utils.helpers import get_env_variable
+
+
+NLP_DATA_DIR = get_env_variable('DATA_DIR', f"{dirname(realpath(__file__))}/data")
 
 
 class ModelLoader:
@@ -24,9 +28,8 @@ class ModelLoader:
         tokenizer_name = self.config[lang]["tokenizer"]
 
         try:                # search cache first
-            src = f"{dirname(realpath(__file__))}/data"
-            tokenizer = AutoTokenizer.from_pretrained(f"{src}/{tokenizer_name}")
-            model = model_class.from_pretrained(f"{src}/{model_name}")
+            tokenizer = AutoTokenizer.from_pretrained(f"{DATA_DIR}/{tokenizer_name}")
+            model = model_class.from_pretrained(f"{DATA_DIR}/{model_name}")
 
         except ValueError as e:  # download iff cache miss
             print("cannot find the requested files in the cached path, attempting download ...")
@@ -34,7 +37,7 @@ class ModelLoader:
             model = model_class.from_pretrained(model_name)
 
             if cache:        # cache all to ./data subdir
-                tokenizer.save_pretrained(f"{src}/{tokenizer_name}")
-                model.save_pretrained(f"{src}/{model_name}")
+                tokenizer.save_pretrained(f"{DATA_DIR}/{tokenizer_name}")
+                model.save_pretrained(f"{DATA_DIR}/{model_name}")
 
         return model, tokenizer
