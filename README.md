@@ -46,7 +46,7 @@ pip-sync
 ```shell
 # set the downloads folder for pretrained models (optional). 
 # defaults to `newsnlp/data` in the source tree.
-#DATA_DIR=/mnt/gcs
+#NLP_DATA_DIR=/mnt/gcs
 ```
 
 ## TODO
