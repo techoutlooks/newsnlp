@@ -4,7 +4,7 @@ from transformers import AutoTokenizer
 from .utils.helpers import get_env_variable
 
 
-NLP_DATA_DIR = get_env_variable('DATA_DIR', f"{dirname(realpath(__file__))}/data")
+NLP_DATA_DIR = get_env_variable('NLP_DATA_DIR', f"{dirname(realpath(__file__))}/data")
 
 
 class ModelLoader:
