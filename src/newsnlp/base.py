@@ -8,6 +8,9 @@ NLP_DATA_DIR = get_env_variable('NLP_DATA_DIR', f"{dirname(realpath(__file__))}/
 
 
 class ModelLoader:
+    """
+    Supplies `NLP_DATA_DIR` env, for custom location to save the pretrained models.
+    """
 
     config = None
 
@@ -27,16 +30,24 @@ class ModelLoader:
         model_name = self.config[lang]["model"]
         tokenizer_name = self.config[lang]["tokenizer"]
 
-        try:                # search cache first
+        # first, search NLP_DATA_DIR
+        try:
             tokenizer = AutoTokenizer.from_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
             model = model_class.from_pretrained(f"{NLP_DATA_DIR}/{model_name}")
 
-        except ValueError as e:  # download iff cache miss
-            print("cannot find the requested files in the cached path, attempting download ...")
+        # cache miss: download pretrained -> NLP_DATA_DIR
+        # really, shoud catch: ValueError, HFValidationError
+        except Exception as e:
+            print(f"cannot find pretrained in NLP_DATA_DIR, attempting download ...\n"
+                  f"->{NLP_DATA_DIR}/{tokenizer_name}\n"
+                  f"->{NLP_DATA_DIR}/{model_name}")
+
+            # first, download to cache
             tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
             model = model_class.from_pretrained(model_name)
 
-            if cache:        # cache all to ./data subdir
+            # then, save pretrained to NLP_DATA_DIR for future calls.
+            if cache:
                 tokenizer.save_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
                 model.save_pretrained(f"{NLP_DATA_DIR}/{model_name}")
 
