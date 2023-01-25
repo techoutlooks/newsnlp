@@ -30,6 +30,14 @@ class Pretrained:
         """
         model, tokenizer = None, None
 
+        def _from_cache(**kwargs):
+            """ Returms model and tokenizer from cache.
+            Attempts to download them to cache iff cache miss.
+            """
+            tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
+            model = model_class.from_pretrained(model_name, **kwargs)
+            return model, tokenizer
+
         # assert required params
         assert self.config, "`ConfigLoader.config` required."
         assert lang in list(self.config), f"language not supported: {lang}"
@@ -37,7 +45,7 @@ class Pretrained:
         tokenizer_name = self.config[lang]["tokenizer"]
 
         if not offline:
-            model, tokenizer = self._from_cache()
+            model, tokenizer = _from_cache()
 
         else:
             try:
@@ -61,10 +69,4 @@ class Pretrained:
 
         return model, tokenizer
 
-    def _from_cache(self, **kwargs):
-        """ Returms model and tokenizer from cache.
-        Attempts to download them to cache iff cache miss.
-        """
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
-        model = model_class.from_pretrained(model_name, **kwargs)
-        return model, tokenizer
+
