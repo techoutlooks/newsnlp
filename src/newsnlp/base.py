@@ -1,6 +1,6 @@
 from os.path import dirname, realpath
 
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AutoConfig
 from .utils.helpers import get_env_variable
 
 
@@ -37,6 +37,7 @@ class ModelLoader:
 
         # cache miss: download pretrained -> NLP_DATA_DIR
         # really, shoud catch: ValueError, HFValidationError
+        # nota: AutoTokenizer requires a config file, even if the tokenizer was found in the path
         except Exception as e:
             print(f"cannot find pretrained in NLP_DATA_DIR, attempting download ...\n"
                   f"->{NLP_DATA_DIR}/{tokenizer_name}\n"
@@ -44,11 +45,14 @@ class ModelLoader:
 
             # first, download to cache
             tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+            tokenizer_config = AutoConfig.from_pretrained(tokenizer_name)
             model = model_class.from_pretrained(model_name)
 
             # then, save pretrained to NLP_DATA_DIR for future calls.
+            # https://github.com/huggingface/transformers/issues/6368#issuecomment-671250169
             if cache:
                 tokenizer.save_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
+                tokenizer_config.save_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
                 model.save_pretrained(f"{NLP_DATA_DIR}/{model_name}")
 
         return model, tokenizer
