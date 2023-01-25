@@ -24,8 +24,8 @@ class Categorizer(Pretrained):
     }
 
     def __init__(self, lang, **kwargs):
-        self.nlp = TextClassificationPipeline(model=self.model, tokenizer=self.tokenizer)
         self.model, self.tokenizer = self.load(lang, AutoModelForSequenceClassification, **kwargs)
+        self.nlp = TextClassificationPipeline(model=self.model, tokenizer=self.tokenizer)
 
     def __call__(self, text):
         return self.categorize(text)
