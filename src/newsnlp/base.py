@@ -2,7 +2,7 @@ import os
 from os.path import dirname, realpath
 
 from transformers import AutoTokenizer, AutoConfig
-from .utils.helpers import get_env_variable
+from .utils.helpers import get_env_variable, run
 
 
 NLP_DATA_DIR = get_env_variable('NLP_DATA_DIR', f"{dirname(realpath(__file__))}/data")
@@ -33,7 +33,7 @@ class ModelLoader:
 
         # first, search NLP_DATA_DIR
         try:
-            os.system(f"ls -lhrat {NLP_DATA_DIR}/{tokenizer_name}")
+            run(f"ls -lhrat {NLP_DATA_DIR}/{tokenizer_name}")
             tokenizer = AutoTokenizer.from_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
             model = model_class.from_pretrained(f"{NLP_DATA_DIR}/{model_name}")
 

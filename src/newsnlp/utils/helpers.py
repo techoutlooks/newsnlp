@@ -1,4 +1,9 @@
 import os
+from subprocess import run as _run, PIPE
+
+
+# run cmd in subshell
+run = lambda cmd: _run(cmd, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
 
 
 def get_env_variable(name, *args) -> str:
@@ -11,4 +16,5 @@ def get_env_variable(name, *args) -> str:
             return args[0]
         message = "Expected environment variable '{}' not set.".format(name)
         raise Exception(message)
+
 
