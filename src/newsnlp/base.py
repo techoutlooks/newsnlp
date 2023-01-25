@@ -1,3 +1,4 @@
+import os
 from os.path import dirname, realpath
 
 from transformers import AutoTokenizer, AutoConfig
@@ -32,6 +33,7 @@ class ModelLoader:
 
         # first, search NLP_DATA_DIR
         try:
+            os.system(f"ls -lhrat {NLP_DATA_DIR}/{tokenizer_name}")
             tokenizer = AutoTokenizer.from_pretrained(f"{NLP_DATA_DIR}/{tokenizer_name}")
             model = model_class.from_pretrained(f"{NLP_DATA_DIR}/{model_name}")
 
