@@ -36,10 +36,10 @@ if __name__ == '__main__':
     text = text[:round(seq_len * MAX_INPUT_LEN_RATIO)]
     text = " ".join(text)
 
-    summary = TextSummarizer(lang=LANGUAGE)(text)
-    title = TitleSummarizer(lang=LANGUAGE)(text)
+    summary = TextSummarizer(lang=LANGUAGE, save=True)(text)
+    title = TitleSummarizer(lang=LANGUAGE, save=True)(text)
 
-    topics = Categorizer(lang=LANGUAGE)(text)
+    topics = Categorizer(lang=LANGUAGE, save=True)(text)
     category = topics[0][0] if topics else 'N/A'
 
     print(f"\ncategory: {category}")

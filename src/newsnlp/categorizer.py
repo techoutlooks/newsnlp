@@ -2,10 +2,10 @@ import torch
 
 from transformers import AutoModelForSequenceClassification, TextClassificationPipeline
 
-from newsnlp.base import ModelLoader
+from newsnlp.base import Pretrained
 
 
-class Categorizer(ModelLoader):
+class Categorizer(Pretrained):
     """
 
     https://huggingface.co/lincoln/flaubert-mlsum-topic-classification
@@ -23,12 +23,9 @@ class Categorizer(ModelLoader):
         }
     }
 
-    def __init__(self, lang):
-
-        self.model, self.tokenizer = \
-            self.load(lang, AutoModelForSequenceClassification)
-        self.nlp = None
+    def __init__(self, lang, **kwargs):
         self.nlp = TextClassificationPipeline(model=self.model, tokenizer=self.tokenizer)
+        self.model, self.tokenizer = self.load(lang, AutoModelForSequenceClassification, **kwargs)
 
     def __call__(self, text):
         return self.categorize(text)

@@ -7,7 +7,7 @@ from transformers import AutoModelForSeq2SeqLM
 # truncate text to 1024 words, ie, barthez's max input seq len
 # keep 70% by rule of thumbs, ie truncate abt 300/1024 words of
 # 1024 long text to actually get to near the 1024 words limit
-from newsnlp.base import ModelLoader
+from newsnlp.base import Pretrained
 
 MAX_INPUT_LEN = 1024
 MAX_INPUT_LEN_RATIO = .72
@@ -18,7 +18,7 @@ SUM_TEXT_MAX_LEN = 1024
 SUM_TITLE_MAX_LEN = 240
 
 
-class TextSummarizer(ModelLoader):
+class TextSummarizer(Pretrained):
     """
     Pretrained [BARThez](https://github.com/moussaKam/BARThez)
     used on a summarization task (French text only, up to 1024 words)
