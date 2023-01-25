@@ -45,7 +45,7 @@ class Pretrained:
         tokenizer_name = self.config[lang]["tokenizer"]
 
         if not offline:
-            model, tokenizer = _from_cache()
+            model, tokenizer = _from_cache(cache_dir=CACHE_DIR)
 
         else:
             try:
