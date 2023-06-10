@@ -1,6 +1,8 @@
+"""
+FIXME: replace with helpers.py from latest version
+"""
 import os
 from subprocess import run as _run, PIPE
-
 
 # run cmd in subshell
 run = lambda cmd: _run(cmd, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)

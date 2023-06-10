@@ -5,8 +5,8 @@ from transformers import AutoTokenizer, AutoConfig
 from .utils.helpers import get_env_variable, run
 
 
-DATA_DIR = get_env_variable('DATA_DIR', f"{dirname(realpath(__file__))}/data")
-CACHE_DIR = get_env_variable('CACHE_DIR', None) # use default cache setting.
+data_dir = get_env_variable('DATA_DIR', f"{dirname(realpath(__file__))}/data")
+cache_dir = get_env_variable('CACHE_DIR', None) # use default cache setting.
 
 
 class Pretrained:
@@ -45,27 +45,27 @@ class Pretrained:
         tokenizer_name = self.config[lang]["tokenizer"]
 
         if not offline:
-            model, tokenizer = _from_cache(cache_dir=CACHE_DIR)
+            model, tokenizer = _from_cache(cache_dir=cache_dir)
 
         else:
             try:
-                print(run(f"ls -lhrat {DATA_DIR}/{tokenizer_name}"))
-                tokenizer = AutoTokenizer.from_pretrained(f"{DATA_DIR}/{tokenizer_name}", cache_dir=CACHE_DIR)
-                model = model_class.from_pretrained(f"{DATA_DIR}/{model_name}", cache_dir=CACHE_DIR)
+                print(run(f"ls -lhrat {data_dir}/{tokenizer_name}"))    # FIXME: to debug msg
+                tokenizer = AutoTokenizer.from_pretrained(f"{data_dir}/{tokenizer_name}", cache_dir=cache_dir)
+                model = model_class.from_pretrained(f"{data_dir}/{model_name}", cache_dir=cache_dir)
 
             except Exception as e: # really, shoud catch: ValueError, HFValidationError
                 print(f"cannot find pretrained in DATA_DIR, attempting download ...\n"
-                      f"->{DATA_DIR}/{tokenizer_name}\n"
-                      f"->{DATA_DIR}/{model_name}")
+                      f"->{data_dir}/{tokenizer_name}\n"
+                      f"->{data_dir}/{model_name}")
 
                 # first, download to cache, then, save pretrained to DATA_DIR for subsequent offline calls
                 # nota: AutoTokenizer requires a config file, even if the tokenizer was found in the path??
                 # https://github.com/huggingface/transformers/issues/6368#issuecomment-671250169
                 # https://github.com/huggingface/transformers/issues/4197#issuecomment-625496433
                 model, tokenizer = self._from_cache()
-                tokenizer.save_pretrained(f"{DATA_DIR}/{tokenizer_name}")
-                tokenizer_config.save_pretrained(f"{DATA_DIR}/{tokenizer_name}")
-                model.save_pretrained(f"{DATA_DIR}/{model_name}")
+                tokenizer.save_pretrained(f"{data_dir}/{tokenizer_name}")
+                tokenizer_config.save_pretrained(f"{data_dir}/{tokenizer_name}")
+                model.save_pretrained(f"{data_dir}/{model_name}")
 
         return model, tokenizer
 

@@ -1,0 +1,46 @@
+name = "newsnlp"
+version = "0.1.0"
+description = "News NLP library"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE.txt"}
+keywords = ["news", "nlp", "summarization", "multilangual"]
+authors = [
+    {email = "ceduth@techoutlooks.com"},
+    {name = "EC"}
+]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Development Status :: 1 - Beta",
+    "Programming Language :: Python :: 3 :: Only"
+]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools >= 65",
+    "wheel >= 0.38",
+]
+
+
+[project]
+name = "newsnlp"
+version = "0.1.0"
+dependencies = [
+    "Cython",
+    "autograd",
+    "spacy",
+    "fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl",
+
+    # BARThez deps
+    "sentencepiece",
+    "transformers[torch]",
+    "sacremoses",
+]
+
+
+[project.urls]
+homepage = "https://github.com/techoutlooks/newsnlp"
+repository = "https://github.com/techoutlooks/newsnlp"
+documentation = "https://github.com/techoutlooks/newsnlp/blob/dev/README.md"
+changelog = "https://github.com/techoutlooks/newsnlp/blob/dev/CHANGELOG.md"
