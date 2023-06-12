@@ -25,7 +25,7 @@ requires = [
 
 [project]
 name = "newsnlp"
-version = "0.1.0"
+version = "0.0.2"
 dependencies = [
     "Cython",
     "autograd",
@@ -42,5 +42,5 @@ dependencies = [
 [project.urls]
 homepage = "https://github.com/techoutlooks/newsnlp"
 repository = "https://github.com/techoutlooks/newsnlp"
-documentation = "https://github.com/techoutlooks/newsnlp/blob/dev/README.md"
-changelog = "https://github.com/techoutlooks/newsnlp/blob/dev/CHANGELOG.md"
+documentation = "https://github.com/techoutlooks/newsnlp/tree/main/README.md"
+changelog = "https://github.com/techoutlooks/newsnlp/tree/main/CHANGELOG.md"

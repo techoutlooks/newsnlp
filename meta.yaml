@@ -1,0 +1,49 @@
+# https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html
+
+{% set version = "0.0.2" %}
+
+package:
+  name: newsnlp
+  version: {{ version }}
+
+source:
+  path: ./src
+
+build:
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - Cython
+    - autograd
+    - spacy
+    - fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl
+    - sentencepiece
+    - transformers[torch]
+    - sacremoses
+test:
+  imports:
+    - newsnlp
+
+about:
+  home: https://github.com/techoutlooks/newsnlp
+  license: MIT
+  license_file: LICENSE.txt
+  summary: 'News NLP library'
+  description: |
+    This module perform inference on summarization tasks 
+    summary, caption, category of scraped news articles  
+    using pre-trained NLP models.
+  dev_url: https://github.com/techoutlooks/newsnlp/tree/dev
+  doc_url: https://github.com/techoutlooks/newsnlp/tree/main
+  doc_source_url: https://github.com/techoutlooks/newsnlp/tree/dev/README.md
+
+  extra:
+    maintainers:
+      - ceduth
