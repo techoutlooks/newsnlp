@@ -1,4 +1,7 @@
 
+## Features
+
+* Support for conda
 
 ## Dev
 
@@ -38,8 +41,14 @@ model.save_pretrained('data/barthez')
 ### Using this library
 
 - Env setup
+
+
+
 ```shell
-pip-sync
+# pip-sync
+
+conda create --name newsbot python=3
+
 ```
 
 - Usage
@@ -51,5 +60,17 @@ pip-sync
 
 ## TODO
 
-- Dockerfile with `conda`, means also upgrade projects consuming the lib to conda
+### Optimisations
+
+- Use optimised TF-IDF from Spacy or SkLearn
+- Utilise only half of the symmetric TF-IDF matrix
+- Resume vectorization of corpus where last task left off.
+  This implies saving vectorization result to disk, and merging with docs newly added to the db. 
+- Cython ??
+
+## Feature request
+
+- Multiple languages support - OK O7/06/2023
+- Summarizer currently only supports 1024 words max. Find more powerful model? push model capacity?
+- Require `conda` in setuptools/pyproject.toml?
 - WTF is the [sumy](https://github.com/miso-belica/sumy) summariser?

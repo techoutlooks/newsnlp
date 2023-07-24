@@ -10,9 +10,11 @@ authors = [
     {name = "EC"}
 ]
 classifiers = [
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
     "Development Status :: 1 - Beta",
-    "Programming Language :: Python :: 3 :: Only"
 ]
 
 [build-system]
@@ -30,12 +32,24 @@ dependencies = [
     "Cython",
     "autograd",
     "spacy",
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl",
     "fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl",
+    "pytextrank",   # TextRank as a spaCy pipeline extension
 
     # BARThez deps
     "sentencepiece",
     "transformers[torch]",
     "sacremoses",
+    "pandas ~=2.0.3",
+
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pandas", "scikit-learn", "skorch",
+    "bs4", "lxml", "playwright"
 ]
 
 

@@ -1,22 +1,19 @@
-from typing import Iterable, Generator, Any
-from copy import copy
+from typing import Iterable
 from functools import reduce
-
-import fr_core_news_sm
 import numpy as np
 
 from spacy import Language
 from spacy.attrs import LOWER, ENT_TYPE, POS, IS_ALPHA, LEMMA
-
 from spacy.tokens import Doc
 
-nlp = fr_core_news_sm.load()
+import newsnlp.globals as g
 
 
 # Token attributes and operations we care about
 # ignore non-matching
 VALID_TOKEN_ATTRS = LOWER, POS, ENT_TYPE, IS_ALPHA, LEMMA
 VALID_OPERATIONS = ('token_attrs', 'to_lowercase', 'remove_stop_words', 'lemmatize', 'convert_numbers')
+
 
 # pick tokenizer config from **params**
 extract_tokenizer_config = lambda params, keys: dict([
@@ -35,22 +32,22 @@ class TokenPrep:
     #TODO: max_tokens, to impose dataset size limit
     """
 
-    def __init__(self, serialize=True, max_tokens=None, **kwargs):
+    def __init__(self, lang, serialize=True, max_tokens=None, **kwargs):
 
+        self.nlp = g.load_nlp(lang)
         self.serialize = serialize
-        if not nlp.has_pipe("normalize_tokens"):
-            nlp.add_pipe("normalize_tokens", config=extract_tokenizer_config(kwargs, VALID_OPERATIONS))
+        if not self.nlp.has_pipe("normalize_tokens"):
+            self.nlp.add_pipe("normalize_tokens", config=extract_tokenizer_config(kwargs, VALID_OPERATIONS))
 
         self.corpus = None
 
     def __call__(self, raw_documents: [str]):
 
         # infer corpus
-        corpus = nlp.pipe(raw_documents)
+        corpus = self.nlp.pipe(raw_documents)
         if self.serialize:
             corpus = self.to_python(corpus)
         self.corpus = corpus
-
 
         return self
 
@@ -81,7 +78,6 @@ class TokenNormalizer:
         self.convert_numbers = convert_numbers
 
     def __call__(self, doc: Doc) -> Doc:
-
         # token's text transform pipeline, with cond tests
         lemmatizer = lambda t: t.lemma_ if self.lemmatize else t.text
         to_lowercase = lambda s: s.lower() if self.to_lowercase else s
@@ -91,9 +87,9 @@ class TokenNormalizer:
         # `doc.to_array(token_attrs)` is a projection with sole tokens we care about
         del_token_idxs = [
             i for (i, token) in enumerate(doc) if \
-                (self.remove_stop_words and token.is_stop)
-                or token.is_punct
-                or token.pos_ in ('SYM',)
+            (self.remove_stop_words and token.is_stop)
+            or token.is_punct
+            or token.pos_ in ('SYM',)
         ]
         doc_array = doc.to_array(self.token_attrs)
         doc_array = np.delete(doc_array, del_token_idxs, axis=0)
@@ -113,5 +109,6 @@ class TokenNormalizer:
         "token_attrs": VALID_TOKEN_ATTRS, "to_lowercase": False,
         "remove_stop_words": False, "lemmatize": False, "convert_numbers": False
     })
-def normalize_tokens(nlp: Language, name: str, token_attrs, to_lowercase, remove_stop_words, lemmatize, convert_numbers):
+def normalize_tokens(nlp: Language, name: str, token_attrs, to_lowercase, remove_stop_words, lemmatize,
+                     convert_numbers):
     return TokenNormalizer(token_attrs, to_lowercase, remove_stop_words, lemmatize, convert_numbers)

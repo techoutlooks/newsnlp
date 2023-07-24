@@ -41,9 +41,8 @@ class TfidfVectorizer:
 
         self._TFIDF = None
         self.tokenizer = TokenPrep(
-            lemmatize=True, remove_stop_words=True,
-            to_lowercase=True, convert_numbers=True
-        )
+            lang, lemmatize=True, remove_stop_words=True,
+            to_lowercase=True, convert_numbers=True)
 
     def __call__(self, raw_documents: [str]) -> [str]:
 
@@ -111,7 +110,6 @@ class TfidfVectorizer:
         # return np.log10(1+Counter(self.token_counts[t]).get(doc_id, 0)/len(self.corpus[doc_id]))
         # return 1+ max(0, np.log10(Counter(self.token_counts[t]).get(doc_id, 0)))
 
-
     def idf(self, t):
         """ Inverse document frequency.
 
@@ -144,5 +142,3 @@ class TfidfVectorizer:
                     self._token_counts[str(t)].append(doc_id)
 
         return self._token_counts
-
-
