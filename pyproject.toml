@@ -40,15 +40,15 @@ dependencies = [
     "sentencepiece",
     "transformers[torch]",
     "sacremoses",
-    "pandas ~=2.0.3",
-
+    "pandas", # "pandas ~=2.0.3",
+    "scikit-learn"
 ]
 
 
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "pandas", "scikit-learn", "skorch",
+    "skorch",
     "bs4", "lxml", "playwright"
 ]
 

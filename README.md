@@ -3,26 +3,9 @@
 
 * Support for conda
 
-## Dev
 
-###
-- Summariser's dependencies: `sentencepiece`
-```shell
 
-conda install -c conda-forge sentencepiece
-conda install pytorch torchvision -c pytorch
-#conda install -c conda-forge transformers
-conda install -c huggingface transformers
-```
-- TFIDF deps: `` 
-```shell
-
-conda install -c conda-forge spacy
-python -m spacy download en_core_web_sm
-
-```
-
-### Trying pretrained models from Huggingface 
+## Trying pretrained models from Huggingface 
 
 - Download once pretrained models locally, suitable for the summarisation task
 ```shell
@@ -38,7 +21,7 @@ model.save_pretrained('data/barthez')
 
 ```
 
-### Using this library
+## Using this library
 
 - Env setup
 
@@ -48,6 +31,23 @@ model.save_pretrained('data/barthez')
 # pip-sync
 
 conda create --name newsbot python=3
+
+```
+
+###
+- Summariser's dependencies: `sentencepiece`
+```shell
+
+conda install -c conda-forge sentencepiece
+conda install pytorch torchvision -c pytorch
+#conda install -c conda-forge transformers
+conda install -c huggingface transformers
+```
+- TFIDF deps: `` 
+```shell
+
+conda install -c conda-forge spacy
+python -m spacy download en_core_web_sm
 
 ```
 
