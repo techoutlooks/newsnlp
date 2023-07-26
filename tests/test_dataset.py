@@ -2,7 +2,8 @@ from urllib.parse import urljoin
 
 import pytest
 
-from newsnlp.ad import extract_ad_candidates_from_url, Dataset, extract_domain
+from newsnlp.ad.dataset import extract_ad_candidates_from_url, Dataset
+from newsnlp.ad import extract_domain
 from newsnlp.ad.constants import ADS_DATASET, data_dir
 from newsnlp.utils.helpers import load_fixture, save_fixture
 
