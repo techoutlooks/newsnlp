@@ -61,7 +61,7 @@ class TfidfVectorizer:
         """ 
         doc_scores = self.cosine_similarity()[doc_id]
         top_similar = sorted(enumerate(doc_scores), key=lambda x: x[1], reverse=True)
-        return list(filter(lambda x: x[1] > threshold, top_similar))[1:top_n]
+        return list(filter(lambda x: x[1] > float(threshold), top_similar))[1:top_n]
 
     def cosine_similarity(self):
         """
