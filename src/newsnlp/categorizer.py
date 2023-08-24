@@ -7,9 +7,10 @@ from newsnlp.base import Pretrained
 
 class Categorizer(Pretrained):
     """
+    Multilanguage text categorizer.
 
-    https://huggingface.co/lincoln/flaubert-mlsum-topic-classification
-
+    Supported languages:
+    * French: cf. https://huggingface.co/lincoln/flaubert-mlsum-topic-classification
 
     Categories:
         - fr: [ "Culture", "Economie", "Education", "Environement", "Justice",

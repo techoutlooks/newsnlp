@@ -1,16 +1,17 @@
-from os.path import dirname, realpath
+from typing import Tuple
 
 import torch
 from transformers import AutoModelForSeq2SeqLM
+
+from newsnlp.base import Pretrained
 
 
 # truncate text to 1024 words, ie, barthez's max input seq len
 # keep 70% by rule of thumbs, ie truncate abt 300/1024 words of
 # 1024 long text to actually get to near the 1024 words limit
-from newsnlp.base import Pretrained
-
 MAX_INPUT_LEN = 1024
 MAX_INPUT_LEN_RATIO = .72
+
 
 # max len of inferred summary.
 # eg. 240 to accommodate a Tweet's len
@@ -20,8 +21,11 @@ SUM_TITLE_MAX_LEN = 240
 
 class TextSummarizer(Pretrained):
     """
-    Pretrained [BARThez](https://github.com/moussaKam/BARThez)
-    used on a summarization task (French text only, up to 1024 words)
+    Multilanguage text summarizer.
+
+    Supported languages:
+    * French: uses pretrained [BARThez](https://github.com/moussaKam/BARThez)
+        used on a summarization task (French text only, up to 1024 words)
     """
     max_length = SUM_TEXT_MAX_LEN
     config = {
@@ -49,11 +53,10 @@ class TextSummarizer(Pretrained):
     def __call__(self, text):
         return self.summarize(text)
 
-    def summarize(self, text):
+    def summarize(self, text) -> Tuple[str, float]:
 
-        input_ids = torch.tensor(
-            [self.tokenizer.encode(text, add_special_tokens=True)]
-        )
+        # inputs = self.tokenizer(text, add_special_tokens=True, return_tensors="pt")
+        input_ids = torch.tensor([self.tokenizer.encode(text, add_special_tokens=True)])
 
         # pretrained BARThez can encode sequences only up to 1024 words
         # cf., max_model_input_sizes= {'moussaKam2/mbarthez': 1024,
@@ -65,10 +68,19 @@ class TextSummarizer(Pretrained):
             print(f"input sequence length {seq_len} greater than model capacity. " 
                   f"truncating to {MAX_INPUT_LEN}")
 
-        predict = self.model.generate(input_ids, max_length=self.max_length)[0]
-        summary = self.tokenizer.decode(predict, skip_special_tokens=True)
+        outputs = self.model.generate(
+            input_ids, return_dict_in_generate=True, output_scores=True,
+            renormalize_logits=True, # max_length=self.max_length,
+        )
 
-        return summary
+        # FIXME: Forbids `max_length` in .generate()
+        transition_scores = self.model.compute_transition_scores(
+            outputs.sequences, outputs.scores, normalize_logits=True)
+
+        # get scores for selected sequence (first sequence)
+        score = transition_scores[0].exp().prod().item()
+        summary = self.tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
+        return summary, score
 
 
 class TitleSummarizer(TextSummarizer):
