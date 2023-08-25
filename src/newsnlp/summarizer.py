@@ -4,14 +4,13 @@ import torch
 from transformers import AutoModelForSeq2SeqLM
 
 from newsnlp.base import Pretrained
-
+from newsnlp.logging import log
 
 # truncate text to 1024 words, ie, barthez's max input seq len
 # keep 70% by rule of thumbs, ie truncate abt 300/1024 words of
 # 1024 long text to actually get to near the 1024 words limit
 MAX_INPUT_LEN = 1024
 MAX_INPUT_LEN_RATIO = .72
-
 
 # max len of inferred summary.
 # eg. 240 to accommodate a Tweet's len
@@ -53,7 +52,16 @@ class TextSummarizer(Pretrained):
     def __call__(self, text):
         return self.summarize(text)
 
-    def summarize(self, text) -> Tuple[str, float]:
+    def summarize(self, text, num_beams=4) -> Tuple[str, float]:
+        """
+        Text generation with beam search decoding of output sequence.
+        This had proved more stable than greedy search, and certainly more accurable
+        cf. transformers.generation.utils.GenerationMixin.compute_transition_scores.__doc__
+        https://huggingface.co/docs/transformers/v4.32.0/en/main_classes/text_generation#transformers.GenerationMixin.generate
+        """
+
+        summary, score = "", -1
+        log_msg = f"summarizing text {len(text)} -> {self.max_length} chars"
 
         # inputs = self.tokenizer(text, add_special_tokens=True, return_tensors="pt")
         input_ids = torch.tensor([self.tokenizer.encode(text, add_special_tokens=True)])
@@ -65,21 +73,28 @@ class TextSummarizer(Pretrained):
         seq_len = input_ids.size(dim=1)
         if seq_len > MAX_INPUT_LEN:
             input_ids = input_ids[:, :MAX_INPUT_LEN]
-            print(f"input sequence length {seq_len} greater than model capacity. " 
-                  f"truncating to {MAX_INPUT_LEN}")
+            log.debug(f"input sequence length {seq_len} greater than model capacity, "
+                      f"truncating to {MAX_INPUT_LEN}")
 
-        outputs = self.model.generate(
-            input_ids, return_dict_in_generate=True, output_scores=True,
-            renormalize_logits=True, # max_length=self.max_length,
-        )
+        try:
+            outputs = self.model.generate(
+                input_ids, return_dict_in_generate=True, output_scores=True,
+                renormalize_logits=True,  max_new_tokens=self.max_length-1, num_beams=num_beams)
+            summary = self.tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
 
-        # FIXME: Forbids `max_length` in .generate()
-        transition_scores = self.model.compute_transition_scores(
-            outputs.sequences, outputs.scores, normalize_logits=True)
+        except Exception:
+            log.exception(log_msg + ": summary generation failed")
 
-        # get scores for selected sequence (first sequence)
-        score = transition_scores[0].exp().prod().item()
-        summary = self.tokenizer.decode(outputs.sequences[0], skip_special_tokens=True)
+        else:
+            try:
+                # extract log probs for selected sequence (first sequence)
+                # FIXME: forbids `max_length` arg in .generate()
+                transition_scores = self.model.compute_transition_scores(
+                    outputs.sequences, outputs.scores, outputs.beam_indices, normalize_logits=False)
+                score = transition_scores[0].exp().prod().item()
+            except Exception as e:
+                log.exception(log_msg + ": score computation failed")
+
         return summary, score
 
 

@@ -10,6 +10,10 @@ Summarization models subclass transformers.models.mbart.modeling_mbart.MBartForC
 [Transformers from Scratch](https://zhuanlan.zhihu.com/p/625798971)
 [Methods for generating text with GPT-2](https://christianjmills.com/posts/transformers-book-notes/chapter-5/index.html)
 
+https://towardsdatascience.com/illustrated-guide-to-transformers-step-by-step-explanation-f74876522bc0
+https://discuss.huggingface.co/t/compute-log-probabilities-of-any-sequence-provided/11710/3
+https://medium.com/geekculture/beam-search-decoding-for-text-generation-in-python-9184699f0120
+https://github.com/huggingface/transformers/issues/14086
 
 ### Nota
 

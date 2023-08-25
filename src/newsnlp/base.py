@@ -3,6 +3,7 @@ from os.path import dirname as up, realpath
 
 from transformers import AutoTokenizer, AutoConfig
 from .utils.helpers import get_env_variable, get_path_stats
+from .logging import log
 
 
 __all__ = (
@@ -116,10 +117,9 @@ class Pretrained:
 
                 model, tokenizer = load_model(*load_args, online=True, save=True,
                                               force_download=force_download)
-                print(mk_msg(bool(model and tokenizer)))
+                log.debug(mk_msg(bool(model and tokenizer)))
 
-        # FIXME: to debug msg
-        print('─' * 3 + f" {model_name} ")
+        log.debug('─' * 3 + f" {model_name} ")
         for envvar, path in dict(
             DATA_DIR=data_dir, CACHE_DIR=cache_dir or '~/.cache/huggingface/transformers/'
         ).items():
@@ -127,7 +127,7 @@ class Pretrained:
             log_msg = errmsg or \
                   "{envvar}\t ({size}, {file_count} files)\t -> {data_dir}"\
                       .format(envvar=envvar, data_dir=data_dir, **r)
-            print(log_msg)
+            log.debug(log_msg)
 
         return model, tokenizer
 
