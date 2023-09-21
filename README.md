@@ -1,37 +1,30 @@
 
-## Features
+Python library that transforms news data using a variety of NLP-based processing tasks. 
+You may:
 
-* Support for conda
+* Generate summary, caption, category for scraped content using NLP.
+* Gather posts by affinity, eg. all similar titles from a bunch of websites.
+* Generate meta-summaries from posts grouped by affinty (concept of sibling posts) using NLP.
+* Remove ads and undesirable content using NLP.
+* Downloads and caches pre-trained Transformer models from HuggingFace for the summarization tasks (check supported languages),
+* Supports Anaconda envs for scientific computing
 
+## Features 
 
+- Uses [Playwright](https://playwright.dev/) to inflat dynamic content from websites (eg. Ads, JavaScript) before processing.
+- Downloads and caches pretrained NLP models locally, suitable for fast inference.
+- Pretrained deep learning Ad detection model.
+- Pretrained Transformer-based LLM for the summarization tasks (only French supported yet).
+- Ad detection implements the (Kushmerick, 1999)](./doc/kushmerick99learning.pdf) paper partially,
+  but relies on Deep Learning rather than statistical fitting.
 
-## Trying pretrained models from Huggingface 
-
-- Download once pretrained models locally, suitable for the summarisation task
-```shell
-from transformers import AutoTokenizer
-
-# load pretrained models from checkpoints
-tokenizer = AutoTokenizer.from_pretrained("moussaKam/barthez")
-model = AutoModelForSeq2SeqLM.from_pretrained("moussaKam/barthez-orangesum-abstract")
-
-# save locally
-tokenizer.save_pretrained('data/barthez-barthez-tokenizer')
-model.save_pretrained('data/barthez')
-
-```
-
-## Using this library
+## Dev
 
 - Env setup
 
-
-
 ```shell
-# pip-sync
-
 conda create --name newsbot python=3
-
+pip-sync
 ```
 
 ###
@@ -51,12 +44,6 @@ python -m spacy download en_core_web_sm
 
 ```
 
-- Usage
-```shell
-# set the downloads folder for pretrained models (optional). 
-# defaults to `newsnlp/data` in the source tree.
-#NLP_DATA_DIR=/mnt/gcs
-```
 
 ## TODO
 
